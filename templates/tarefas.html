@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Tarefas{% endblock %}
+
+{% block content %}
+<h2>Suas Tarefas</h2>
+<ul>
+    {% for tarefa in tarefas %}
+    <li>
+        <div>
+            <strong>{{ tarefa.descricao }}</strong> - {{ tarefa.data_limite }}
+            <span>{{ tarefa.status }}</span>
+        </div>
+        <div>
+            <a href="{{ url_for('atualizar_tarefa', tarefa_id=tarefa.id) }}">Editar</a> |
+            <a href="{{ url_for('excluir_tarefa', tarefa_id=tarefa.id) }}">Excluir</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{{ url_for('adicionar_tarefa') }}">Adicionar Nova Tarefa</a>
+{% endblock %}

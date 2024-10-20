@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Adicionar Tarefa{% endblock %}
+
+{% block content %}
+<h2>Adicionar Nova Tarefa</h2>
+<form method="POST">
+    <label for="descricao">Descrição</label>
+    <input type="text" name="descricao" id="descricao" required>
+
+    <label for="prioridade">Prioridade</label>
+    <select name="prioridade" id="prioridade">
+        <option value="Baixa">Baixa</option>
+        <option value="Média">Média</option>
+        <option value="Alta">Alta</option>
+    </select>
+
+    <label for="data_limite">Data Limite</label>
+    <input type="date" name="data_limite" id="data_limite" required>
+
+    <button type="submit">Adicionar Tarefa</button>
+</form>
+{% endblock %}
