@@ -1,14 +1,17 @@
+from datetime import date
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Função para obter conexão com o banco de dados
 def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
         user="root",
         password="aluno",
-        database="sistema_tarefas"  # Atualizado o nome do banco de dados
+        database="sistema_tarefas"
     )
 
+# Classe para gerenciar operações relacionadas ao usuário
 class Usuario:    
     @staticmethod
     def criar_usuario(nome, email, senha):
@@ -45,13 +48,18 @@ class Usuario:
     def verificar_senha(senha_hash, senha):
         return check_password_hash(senha_hash, senha)
 
+# Classe para gerenciar operações relacionadas às tarefas
 class Tarefa:
     @staticmethod
     def adicionar_tarefa(usuario_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria):
+        data_criacao = date.today()  # Define a data de criação como a data atual
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO tarefas (usuario_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria) VALUES (%s, %s, %s, %s, %s, %s, %s)', 
-                       (usuario_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria))
+        cursor.execute('''
+            INSERT INTO tarefas 
+            (usuario_id, titulo, descricao, data_criacao, data_limite, id_status, id_prioridade, id_categoria) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (usuario_id, titulo, descricao, data_criacao, data_limite, id_status, id_prioridade, id_categoria))
         connection.commit()
         cursor.close()
         connection.close()

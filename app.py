@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from models import Usuario, Tarefa
+from models import Usuario, Tarefa, get_db_connection
 
 app = Flask(__name__)
 app.secret_key = 'chave_secreta'
@@ -21,6 +21,10 @@ def load_user(user_id):
     if usuario:
         return User(usuario['id'], usuario['nome'], usuario['email'])
     return None
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/registrar', methods=['GET', 'POST'])
 def registrar():

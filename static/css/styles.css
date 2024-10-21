@@ -11,6 +11,12 @@
     --borda-radius: 10px;
     --transicao-padrao: 0.3s ease;
     --largura-maxima: 800px;
+    --prioridade-alta: #ff6347;
+    --prioridade-media: #ffa500;
+    --prioridade-baixa: #32cd32;
+    --status-concluida: #32cd32;
+    --status-pendente: #ffa500;
+    --status-andamento: #1e90ff;
 }
 
 * {
@@ -52,9 +58,10 @@ form {
 label {
     margin: 10px 0 5px;
     color: var(--cor-primaria);
+    font-weight: bold;
 }
 
-input, select {
+input, select, textarea {
     padding: 12px;
     margin-bottom: 20px;
     border: 1px solid var(--cor-borda);
@@ -65,12 +72,12 @@ input, select {
     transition: border-color var(--transicao-padrao), box-shadow var(--transicao-padrao);
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
     border-color: var(--cor-focus);
     box-shadow: 0 0 5px var(--cor-focus);
 }
 
-input:disabled, select:disabled {
+input:disabled, select:disabled, textarea:disabled {
     background-color: var(--cor-desabilitado);
     cursor: not-allowed;
 }
@@ -115,6 +122,52 @@ li:hover {
     background-color: var(--cor-hover);
 }
 
+.prioridade-alta {
+    background-color: var(--prioridade-alta);
+    color: var(--cor-texto);
+    border-radius: var(--borda-radius);
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.prioridade-media {
+    background-color: var(--prioridade-media);
+    color: var(--cor-texto);
+    border-radius: var(--borda-radius);
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.prioridade-baixa {
+    background-color: var(--prioridade-baixa);
+    color: var(--cor-texto);
+    border-radius: var(--borda-radius);
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+/* Status colors */
+.status-concluida {
+    background-color: var(--status-concluida);
+    color: var(--cor-texto);
+    padding: 5px 10px;
+    border-radius: var(--borda-radius);
+}
+
+.status-andamento {
+    background-color: var(--status-andamento);
+    color: var(--cor-texto);
+    padding: 5px 10px;
+    border-radius: var(--borda-radius);
+}
+
+.status-pendente {
+    background-color: var(--status-pendente);
+    color: var(--cor-texto);
+    padding: 5px 10px;
+    border-radius: var(--borda-radius);
+}
+
 a {
     color: var(--cor-secundaria);
     text-decoration: none;
@@ -136,7 +189,7 @@ a:hover {
         font-size: 14px;
     }
 
-    input, select {
+    input, select, textarea {
         padding: 10px;
         font-size: 14px;
     }
