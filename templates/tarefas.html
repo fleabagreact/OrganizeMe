@@ -3,19 +3,21 @@
 
 {% block content %}
 <h2>Suas Tarefas</h2>
+<a href="{{ url_for('adicionar_tarefa') }}" class="btn btn-primary">Adicionar Tarefa</a>
 <ul>
     {% for tarefa in tarefas %}
     <li>
         <div>
-            <strong>{{ tarefa.descricao }}</strong> - {{ tarefa.data_limite }}
+            <strong>{{ tarefa.titulo }}</strong> - {{ tarefa.data_limite }}
             <span>{{ tarefa.status }}</span>
         </div>
         <div>
-            <a href="{{ url_for('atualizar_tarefa', tarefa_id=tarefa.id) }}">Editar</a> |
-            <a href="{{ url_for('excluir_tarefa', tarefa_id=tarefa.id) }}">Excluir</a>
+            <a href="{{ url_for('atualizar_tarefa', tarefa_id=tarefa.id_tarefa) }}">Editar</a> |
+            <form action="{{ url_for('excluir_tarefa', tarefa_id=tarefa.id_tarefa) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Excluir</button>
+            </form>
         </div>
     </li>
     {% endfor %}
 </ul>
-<a href="{{ url_for('adicionar_tarefa') }}">Adicionar Nova Tarefa</a>
 {% endblock %}

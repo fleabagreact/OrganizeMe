@@ -2,7 +2,7 @@ import mysql.connector
 
 db_config = {
     'user': 'root',
-    'password': 'aluno',
+    'password': '',
     'host': 'localhost',
 }
 

@@ -146,7 +146,6 @@ li:hover {
     font-weight: bold;
 }
 
-/* Status colors */
 .status-concluida {
     background-color: var(--status-concluida);
     color: var(--cor-texto);

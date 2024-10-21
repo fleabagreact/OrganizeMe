@@ -66,6 +66,7 @@ def logout():
 @login_required
 def tarefas():
     tarefas = Tarefa.listar_tarefas(current_user.id)
+    print(tarefas)  # Para depuração
     return render_template('tarefas.html', tarefas=tarefas)
 
 @app.route('/tarefas/adicionar', methods=['GET', 'POST'])
@@ -84,6 +85,45 @@ def adicionar_tarefa():
 
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+
+    cursor.execute('SELECT * FROM status_tarefa')
+    status_tarefas = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM prioridade_tarefa')
+    prioridade_tarefas = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM categoria_tarefa')
+    categoria_tarefas = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return render_template('adicionar_tarefa.html', status_tarefas=status_tarefas, prioridade_tarefas=prioridade_tarefas, categoria_tarefas=categoria_tarefas)
+
+@app.route('/tarefas/excluir/<int:tarefa_id>', methods=['POST'])
+@login_required
+def excluir_tarefa(tarefa_id):
+    Tarefa.excluir_tarefa(tarefa_id)
+    flash('Tarefa excluída com sucesso!', 'sucesso')
+    return redirect(url_for('tarefas'))
+
+@app.route('/tarefas/atualizar/<int:tarefa_id>', methods=['GET', 'POST'])
+@login_required
+def atualizar_tarefa(tarefa_id):
+    tarefa = Tarefa.buscar_tarefa_por_id(tarefa_id)
+    if request.method == 'POST':
+        titulo = request.form['titulo']
+        descricao = request.form['descricao']
+        data_limite = request.form['data_limite']
+        id_status = request.form['id_status']
+        id_prioridade = request.form['id_prioridade']
+        id_categoria = request.form['id_categoria']
+        Tarefa.atualizar_tarefa(tarefa_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria)
+        flash('Tarefa atualizada com sucesso!', 'sucesso')
+        return redirect(url_for('tarefas'))
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
     
     cursor.execute('SELECT * FROM status_tarefa')
     status_tarefas = cursor.fetchall()
@@ -97,7 +137,7 @@ def adicionar_tarefa():
     cursor.close()
     connection.close()
 
-    return render_template('adicionar_tarefa.html', status_tarefas=status_tarefas, prioridade_tarefas=prioridade_tarefas, categoria_tarefas=categoria_tarefas)
+    return render_template('atualizar_tarefa.html', tarefa=tarefa, status_tarefas=status_tarefas, prioridade_tarefas=prioridade_tarefas, categoria_tarefas=categoria_tarefas)
 
 if __name__ == '__main__':
     app.run(debug=True)

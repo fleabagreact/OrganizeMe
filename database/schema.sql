@@ -10,13 +10,13 @@ CREATE TABLE IF NOT EXISTS usuarios (
     senha VARCHAR(255) NOT NULL
 );
 
--- Tabela de Status das Tarefas (Ex: "Concluída", "Em andamento", "Pendente")
+-- Tabela de Status das Tarefas
 CREATE TABLE IF NOT EXISTS status_tarefa (
     id_status INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(50) NOT NULL
 );
 
--- Tabela de Prioridades das Tarefas (Ex: "Baixa", "Média", "Alta")
+-- Tabela de Prioridades das Tarefas
 CREATE TABLE IF NOT EXISTS prioridade_tarefa (
     id_prioridade INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(50) NOT NULL
@@ -38,26 +38,26 @@ CREATE TABLE IF NOT EXISTS tarefas (
     id_status INT,
     id_prioridade INT,
     id_categoria INT,
-    usuario_id INT, -- Coluna adicionada para relacionar com a tabela usuarios
+    usuario_id INT, 
     FOREIGN KEY (id_status) REFERENCES status_tarefa(id_status),
     FOREIGN KEY (id_prioridade) REFERENCES prioridade_tarefa(id_prioridade),
     FOREIGN KEY (id_categoria) REFERENCES categoria_tarefa(id_categoria),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) -- Referência ao usuário que criou a tarefa
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
--- Inserção de valores iniciais para status (ignorar se já existir)
+-- Inserção de valores iniciais para status
 INSERT IGNORE INTO status_tarefa (descricao) VALUES 
 ('Concluída'),
 ('Em andamento'),
 ('Pendente');
 
--- Inserção de valores iniciais para prioridades (ignorar se já existir)
+-- Inserção de valores iniciais para prioridades
 INSERT IGNORE INTO prioridade_tarefa (descricao) VALUES 
 ('Baixa'),
 ('Média'),
 ('Alta');
 
--- Inserção de valores iniciais para categorias (ignorar se já existir)
+-- Inserção de valores iniciais para categorias
 INSERT IGNORE INTO categoria_tarefa (descricao) VALUES 
 ('Trabalho'),
 ('Estudo'),

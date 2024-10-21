@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Atualizar Tarefa</h1>
+<form method="POST">
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" value="{{ tarefa.titulo }}" required>
+
+    <label for="descricao">Descrição:</label>
+    <textarea id="descricao" name="descricao">{{ tarefa.descricao }}</textarea>
+
+    <label for="data_limite">Data Limite:</label>
+    <input type="date" id="data_limite" name="data_limite" value="{{ tarefa.data_limite }}" required>
+
+    <label for="id_status">Status:</label>
+    <select id="id_status" name="id_status" required>
+        {% for status in status_tarefas %}
+            <option value="{{ status.id_status }}" {% if status.id_status == tarefa.id_status %}selected{% endif %}>{{ status.descricao }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="id_prioridade">Prioridade:</label>
+    <select id="id_prioridade" name="id_prioridade" required>
+        {% for prioridade in prioridade_tarefas %}
+            <option value="{{ prioridade.id_prioridade }}" {% if prioridade.id_prioridade == tarefa.id_prioridade %}selected{% endif %}>{{ prioridade.descricao }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="id_categoria">Categoria:</label>
+    <select id="id_categoria" name="id_categoria" required>
+        {% for categoria in categoria_tarefas %}
+            <option value="{{ categoria.id_categoria }}" {% if categoria.id_categoria == tarefa.id_categoria %}selected{% endif %}>{{ categoria.descricao }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Atualizar Tarefa</button>
+</form>
+<a href="{{ url_for('tarefas') }}">Voltar para Tarefas</a>
+{% endblock %}
