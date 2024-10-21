@@ -5,11 +5,11 @@ def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password=" ",
-        database="gerenciador_tarefas"
+        password="aluno",
+        database="sistema_tarefas"  # Atualizado o nome do banco de dados
     )
 
-class Usuario:
+class Usuario:    
     @staticmethod
     def criar_usuario(nome, email, senha):
         senha_hash = generate_password_hash(senha)
@@ -47,11 +47,11 @@ class Usuario:
 
 class Tarefa:
     @staticmethod
-    def adicionar_tarefa(usuario_id, descricao, prioridade, data_limite):
+    def adicionar_tarefa(usuario_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria):
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO tarefas (usuario_id, descricao, prioridade, data_limite) VALUES (%s, %s, %s, %s)', 
-                       (usuario_id, descricao, prioridade, data_limite))
+        cursor.execute('INSERT INTO tarefas (usuario_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria) VALUES (%s, %s, %s, %s, %s, %s, %s)', 
+                       (usuario_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria))
         connection.commit()
         cursor.close()
         connection.close()
@@ -60,7 +60,14 @@ class Tarefa:
     def listar_tarefas(usuario_id):
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM tarefas WHERE usuario_id = %s', (usuario_id,))
+        cursor.execute('''
+            SELECT t.*, st.descricao as status, pt.descricao as prioridade, ct.descricao as categoria
+            FROM tarefas t
+            JOIN status_tarefa st ON t.id_status = st.id_status
+            JOIN prioridade_tarefa pt ON t.id_prioridade = pt.id_prioridade
+            JOIN categoria_tarefa ct ON t.id_categoria = ct.id_categoria
+            WHERE t.usuario_id = %s
+        ''', (usuario_id,))
         tarefas = cursor.fetchall()
         cursor.close()
         connection.close()
@@ -70,7 +77,7 @@ class Tarefa:
     def excluir_tarefa(tarefa_id):
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('DELETE FROM tarefas WHERE id = %s', (tarefa_id,))
+        cursor.execute('DELETE FROM tarefas WHERE id_tarefa = %s', (tarefa_id,))
         connection.commit()
         cursor.close()
         connection.close()
@@ -79,18 +86,28 @@ class Tarefa:
     def buscar_tarefa_por_id(tarefa_id):
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM tarefas WHERE id = %s', (tarefa_id,))
+        cursor.execute('''
+            SELECT t.*, st.descricao as status, pt.descricao as prioridade, ct.descricao as categoria
+            FROM tarefas t
+            JOIN status_tarefa st ON t.id_status = st.id_status
+            JOIN prioridade_tarefa pt ON t.id_prioridade = pt.id_prioridade
+            JOIN categoria_tarefa ct ON t.id_categoria = ct.id_categoria
+            WHERE t.id_tarefa = %s
+        ''', (tarefa_id,))
         tarefa = cursor.fetchone()
         cursor.close()
         connection.close()
         return tarefa
 
     @staticmethod
-    def atualizar_tarefa(tarefa_id, descricao, prioridade, data_limite):
+    def atualizar_tarefa(tarefa_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria):
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('UPDATE tarefas SET descricao = %s, prioridade = %s, data_limite = %s WHERE id = %s', 
-                       (descricao, prioridade, data_limite, tarefa_id))
+        cursor.execute('''
+            UPDATE tarefas 
+            SET titulo = %s, descricao = %s, data_limite = %s, id_status = %s, id_prioridade = %s, id_categoria = %s
+            WHERE id_tarefa = %s
+        ''', (titulo, descricao, data_limite, id_status, id_prioridade, id_categoria, tarefa_id))
         connection.commit()
         cursor.close()
         connection.close()

@@ -22,10 +22,6 @@ def load_user(user_id):
         return User(usuario['id'], usuario['nome'], usuario['email'])
     return None
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/registrar', methods=['GET', 'POST'])
 def registrar():
     if request.method == 'POST':
@@ -33,8 +29,12 @@ def registrar():
         email = request.form['email']
         senha = request.form['senha']
         Usuario.criar_usuario(nome, email, senha)
-        flash('Registro realizado com sucesso!', 'sucesso')
-        return redirect(url_for('tarefas'))
+        usuario = Usuario.buscar_por_email(email)
+        if usuario:
+            user = User(usuario['id'], usuario['nome'], usuario['email'])
+            login_user(user)
+            flash('Registro realizado com sucesso!', 'sucesso')
+            return redirect(url_for('tarefas'))
     return render_template('registrar.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -56,7 +56,7 @@ def login():
 def logout():
     logout_user()
     flash('Você saiu da sua conta.', 'info')
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 @app.route('/tarefas', methods=['GET', 'POST'])
 @login_required
@@ -68,13 +68,32 @@ def tarefas():
 @login_required
 def adicionar_tarefa():
     if request.method == 'POST':
+        titulo = request.form['titulo']
         descricao = request.form['descricao']
-        prioridade = request.form['prioridade']
         data_limite = request.form['data_limite']
-        Tarefa.adicionar_tarefa(current_user.id, descricao, prioridade, data_limite)
+        id_status = request.form['id_status']
+        id_prioridade = request.form['id_prioridade']
+        id_categoria = request.form['id_categoria']
+        Tarefa.adicionar_tarefa(current_user.id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria)
         flash('Tarefa adicionada com sucesso!', 'sucesso')
         return redirect(url_for('tarefas'))
-    return render_template('adicionar_tarefa.html')
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    cursor.execute('SELECT * FROM status_tarefa')
+    status_tarefas = cursor.fetchall()
+    
+    cursor.execute('SELECT * FROM prioridade_tarefa')
+    prioridade_tarefas = cursor.fetchall()
+    
+    cursor.execute('SELECT * FROM categoria_tarefa')
+    categoria_tarefas = cursor.fetchall()
+    
+    cursor.close()
+    connection.close()
+
+    return render_template('adicionar_tarefa.html', status_tarefas=status_tarefas, prioridade_tarefas=prioridade_tarefas, categoria_tarefas=categoria_tarefas)
 
 if __name__ == '__main__':
     app.run(debug=True)
