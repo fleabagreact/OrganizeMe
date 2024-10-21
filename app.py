@@ -65,9 +65,22 @@ def logout():
 @app.route('/tarefas', methods=['GET', 'POST'])
 @login_required
 def tarefas():
-    tarefas = Tarefa.listar_tarefas(current_user.id)
-    print(tarefas)  # Para depuração
-    return render_template('tarefas.html', tarefas=tarefas)
+    categoria_id = request.args.get('categoria_id', type=int)
+    data_inicio = request.args.get('data_inicio', type=str)
+    data_fim = request.args.get('data_fim', type=str)
+
+    # Obter tarefas filtradas
+    tarefas = Tarefa.listar_tarefas(current_user.id, categoria_id, data_inicio, data_fim)
+
+    # Obter categorias para o filtro
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM categoria_tarefa')
+    categoria_tarefas = cursor.fetchall()
+    cursor.close()
+    connection.close()
+
+    return render_template('tarefas.html', tarefas=tarefas, categoria_tarefas=categoria_tarefas)
 
 @app.route('/tarefas/adicionar', methods=['GET', 'POST'])
 @login_required

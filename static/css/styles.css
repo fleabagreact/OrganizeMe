@@ -50,6 +50,53 @@ h1, h2 {
     color: var(--cor-primaria);
 }
 
+.filtro-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--borda-radius);
+    background-color: var(--cor-texto);
+}
+
+.filtro-label {
+    margin-right: 10px;
+    color: var(--cor-primaria);
+    font-weight: bold;
+}
+
+.filtro-select {
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--borda-radius);
+    background-color: var(--cor-fundo);
+    font-size: 16px;
+    transition: border-color var(--transicao-padrao);
+}
+
+.filtro-select:focus {
+    border-color: var(--cor-focus);
+    box-shadow: 0 0 5px var(--cor-focus);
+}
+
+.filtro-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--borda-radius);
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color var(--transicao-padrao), transform var(--transicao-padrao);
+}
+
+.filtro-button:hover {
+    background-color: var(--cor-primaria);
+    transform: scale(1.05);
+}
+
 form {
     display: flex;
     flex-direction: column;

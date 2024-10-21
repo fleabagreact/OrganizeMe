@@ -2,7 +2,6 @@ from datetime import date
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Função para obter conexão com o banco de dados
 def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -11,7 +10,6 @@ def get_db_connection():
         database="sistema_tarefas"
     )
 
-# Classe para gerenciar operações relacionadas ao usuário
 class Usuario:    
     @staticmethod
     def criar_usuario(nome, email, senha):
@@ -48,14 +46,13 @@ class Usuario:
     def verificar_senha(senha_hash, senha):
         return check_password_hash(senha_hash, senha)
 
-# Classe para gerenciar operações relacionadas às tarefas
 class Tarefa:
     @staticmethod
     def adicionar_tarefa(usuario_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria):
-        data_criacao = date.today()  # Define a data de criação como a data atual
+        data_criacao = date.today()
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('''
+        cursor.execute(''' 
             INSERT INTO tarefas 
             (usuario_id, titulo, descricao, data_criacao, data_limite, id_status, id_prioridade, id_categoria) 
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -65,21 +62,46 @@ class Tarefa:
         connection.close()
 
     @staticmethod
-    def listar_tarefas(usuario_id):
+    def listar_tarefas(usuario_id, categoria_id=None, data_inicio=None, data_fim=None):
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
-        cursor.execute('''
+
+        query = '''
             SELECT t.*, st.descricao as status, pt.descricao as prioridade, ct.descricao as categoria
             FROM tarefas t
             JOIN status_tarefa st ON t.id_status = st.id_status
             JOIN prioridade_tarefa pt ON t.id_prioridade = pt.id_prioridade
             JOIN categoria_tarefa ct ON t.id_categoria = ct.id_categoria
             WHERE t.usuario_id = %s
-        ''', (usuario_id,))
+        '''
+        params = [usuario_id]
+
+        if categoria_id is not None:
+            query += ' AND t.id_categoria = %s'
+            params.append(categoria_id)
+
+        if data_inicio is not None:
+            query += ' AND t.data_limite >= %s'
+            params.append(data_inicio)
+
+        if data_fim is not None:
+            query += ' AND t.data_limite <= %s'
+            params.append(data_fim)
+
+        cursor.execute(query, params)
         tarefas = cursor.fetchall()
         cursor.close()
         connection.close()
         return tarefas
+
+    @staticmethod
+    def excluir_tarefa(tarefa_id):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM tarefas WHERE tarefa_id = %s', (tarefa_id,))
+        connection.commit()
+        cursor.close()
+        connection.close()
 
     @staticmethod
     def excluir_tarefa(tarefa_id):
@@ -90,31 +112,16 @@ class Tarefa:
         cursor.close()
         connection.close()
 
-    @staticmethod
-    def buscar_tarefa_por_id(tarefa_id):
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-        cursor.execute('''
-            SELECT t.*, st.descricao as status, pt.descricao as prioridade, ct.descricao as categoria
-            FROM tarefas t
-            JOIN status_tarefa st ON t.id_status = st.id_status
-            JOIN prioridade_tarefa pt ON t.id_prioridade = pt.id_prioridade
-            JOIN categoria_tarefa ct ON t.id_categoria = ct.id_categoria
-            WHERE t.id_tarefa = %s
-        ''', (tarefa_id,))
-        tarefa = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        return tarefa
 
     @staticmethod
     def atualizar_tarefa(tarefa_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria):
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('''
+        cursor.execute(''' 
             UPDATE tarefas 
-            SET titulo = %s, descricao = %s, data_limite = %s, id_status = %s, id_prioridade = %s, id_categoria = %s
-            WHERE id_tarefa = %s
+            SET titulo = %s, descricao = %s, data_limite = %s, id_status = %s, 
+                id_prioridade = %s, id_categoria = %s 
+            WHERE id = %s
         ''', (titulo, descricao, data_limite, id_status, id_prioridade, id_categoria, tarefa_id))
         connection.commit()
         cursor.close()

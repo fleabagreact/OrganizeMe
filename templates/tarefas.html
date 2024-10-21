@@ -4,6 +4,28 @@
 {% block content %}
 <h2>Suas Tarefas</h2>
 <a href="{{ url_for('adicionar_tarefa') }}" class="btn btn-primary">Adicionar Tarefa</a>
+
+<div class="filtro-container">
+    <div>
+        <label for="categoria" class="filtro-label">Categoria:</label>
+        <select id="categoria" name="categoria" class="filtro-select">
+            <option value="">Todas</option>
+            {% for categoria in categoria_tarefas %}
+                <option value="{{ categoria.id_categoria }}">{{ categoria.descricao }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="data_inicio" class="filtro-label">Data Início:</label>
+        <input type="date" id="data_inicio" name="data_inicio" class="filtro-select">
+    </div>
+    <div>
+        <label for="data_fim" class="filtro-label">Data Fim:</label>
+        <input type="date" id="data_fim" name="data_fim" class="filtro-select">
+    </div>
+    <button type="submit" class="filtro-button">Filtrar</button>
+</div>
+
 <ul>
     {% for tarefa in tarefas %}
     <li>
@@ -20,4 +42,5 @@
     </li>
     {% endfor %}
 </ul>
+
 {% endblock %}
