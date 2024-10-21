@@ -17,8 +17,7 @@ OrganizeMe é um sistema de gerenciamento de tarefas que permite aos usuários r
 - **Backend:**
   - Python
   - Flask
-  - Werkzeug (para hash de senhas)
-  - mysql-connector (para conexão com o MySQL)
+  - mysql-connector
   
 - **Banco de Dados:**
   - MySQL
@@ -45,7 +44,7 @@ Antes de executar o projeto, você precisa ter o seguinte instalado em sua máqu
 
 2. Instale as dependências necessárias:
    ```bash
-   pip install -rrequirements.txt
+   pip install -r requirements.txt
    ```
 
 3. Crie o banco de dados:
@@ -56,7 +55,7 @@ Antes de executar o projeto, você precisa ter o seguinte instalado em sua máqu
 
 4. Inicie o servidor Flask:
    ```bash
-   python app.py
+   flask run --debug
    ```
 
 5. Acesse o aplicativo em seu navegador:
@@ -69,15 +68,21 @@ Antes de executar o projeto, você precisa ter o seguinte instalado em sua máqu
 ```
 OrganizeMe/
 │
-├── app.py               # Arquivo principal da aplicação
-├── init_db.py           # Script para inicializar o banco de dados
-├── models.py            # Modelos para interação com o banco de dados
-├── templates/           # Diretório para templates HTML
-│   ├── index.html       # Página inicial
-│   ├── registrar.html    # Página de registro
-│   ├── login.html        # Página de login
-│   ├── tarefas.html      # Página de visualização de tarefas
-│   ├── adicionar_tarefa.html # Página para adicionar novas tarefas
-│   └── atualizar_tarefa.html # Página para editar tarefas
-└── static/              # Arquivos estáticos (CSS, JavaScript, imagens)
+├── app.py
+├── init_db.py
+├── models.py
+├── templates/
+│   ├── index.html
+│   ├── registrar.html
+│   ├── login.html
+│   ├── tarefas.html
+│   ├── adicionar_tarefa.html
+│   └── atualizar_tarefa.html
+└── static/ 
+    ├── css/-
+    │   └── styles.css
 ```
+
+## Membros do Grupo
+
+Este projeto foi desenvolvido pelo grupo formado por Anna Júlia, Gabriely, Luiza e Wesley.
