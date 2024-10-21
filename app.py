@@ -22,6 +22,10 @@ def load_user(user_id):
         return User(usuario['id'], usuario['nome'], usuario['email'])
     return None
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route('/registrar', methods=['GET', 'POST'])
 def registrar():
     if request.method == 'POST':
@@ -29,8 +33,8 @@ def registrar():
         email = request.form['email']
         senha = request.form['senha']
         Usuario.criar_usuario(nome, email, senha)
-        flash('Registro realizado com sucesso! Faça login.', 'sucesso')
-        return redirect(url_for('login'))
+        flash('Registro realizado com sucesso!', 'sucesso')
+        return redirect(url_for('tarefas'))
     return render_template('registrar.html')
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -4,15 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} - OrganizeMe</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>OrganizeMe</h1>
             <nav>
-                <a href="{{ url_for('tarefas') }}">Início</a> | 
-                <a href="{{ url_for('logout') }}">Sair</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('tarefas') }}">Início</a> | 
+                    <a href="{{ url_for('logout') }}">Sair</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a> | 
+                    <a href="{{ url_for('registrar') }}">Registrar</a>
+                {% endif %}
             </nav>
         </header>
         <hr>

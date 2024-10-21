@@ -2,7 +2,7 @@ import mysql.connector
 
 db_config = {
     'user': 'root',
-    'password': '',  # Sem senha, assumindo o uso de XAMPP
+    'password': 'aluno',
     'host': 'localhost',
 }
 
