@@ -62,25 +62,33 @@ def logout():
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('index'))
 
-@app.route('/tarefas', methods=['GET', 'POST'])
+@app.route('/tarefas', methods=['GET'])
 @login_required
 def tarefas():
     categoria_id = request.args.get('categoria_id', type=int)
+    prioridade_id = request.args.get('prioridade_id', type=int)
+    status_id = request.args.get('status_id', type=int)
     data_inicio = request.args.get('data_inicio', type=str)
     data_fim = request.args.get('data_fim', type=str)
 
-    # Obter tarefas filtradas
-    tarefas = Tarefa.listar_tarefas(current_user.id, categoria_id, data_inicio, data_fim)
+    tarefas = Tarefa.listar_tarefas(current_user.id, categoria_id, prioridade_id, status_id, data_inicio, data_fim)
 
-    # Obter categorias para o filtro
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+    
     cursor.execute('SELECT * FROM categoria_tarefa')
     categoria_tarefas = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM prioridade_tarefa')
+    prioridade_tarefas = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM status_tarefa')
+    status_tarefas = cursor.fetchall()
+
     cursor.close()
     connection.close()
 
-    return render_template('tarefas.html', tarefas=tarefas, categoria_tarefas=categoria_tarefas)
+    return render_template('tarefas.html', tarefas=tarefas, categoria_tarefas=categoria_tarefas, prioridade_tarefas=prioridade_tarefas, status_tarefas=status_tarefas, categoria_id=categoria_id, prioridade_id=prioridade_id, status_id=status_id,data_inicio=data_inicio, data_fim=data_fim)
 
 @app.route('/tarefas/adicionar', methods=['GET', 'POST'])
 @login_required

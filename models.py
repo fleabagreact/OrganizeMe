@@ -62,10 +62,11 @@ class Tarefa:
         connection.close()
 
     @staticmethod
-    def listar_tarefas(usuario_id, categoria_id=None, data_inicio=None, data_fim=None):
+    def listar_tarefas(usuario_id, categoria_id=None, prioridade_id=None, status_id=None, data_inicio=None, data_fim=None):
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
 
+        # Base query
         query = '''
             SELECT t.*, st.descricao as status, pt.descricao as prioridade, ct.descricao as categoria
             FROM tarefas t
@@ -76,9 +77,18 @@ class Tarefa:
         '''
         params = [usuario_id]
 
+        # Apply filters dynamically
         if categoria_id is not None:
             query += ' AND t.id_categoria = %s'
             params.append(categoria_id)
+
+        if prioridade_id is not None:
+            query += ' AND t.id_prioridade = %s'
+            params.append(prioridade_id)
+
+        if status_id is not None:
+            query += ' AND t.id_status = %s'
+            params.append(status_id)
 
         if data_inicio is not None:
             query += ' AND t.data_limite >= %s'
@@ -98,20 +108,10 @@ class Tarefa:
     def excluir_tarefa(tarefa_id):
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('DELETE FROM tarefas WHERE tarefa_id = %s', (tarefa_id,))
-        connection.commit()
-        cursor.close()
-        connection.close()
-
-    @staticmethod
-    def excluir_tarefa(tarefa_id):
-        connection = get_db_connection()
-        cursor = connection.cursor()
         cursor.execute('DELETE FROM tarefas WHERE id_tarefa = %s', (tarefa_id,))
         connection.commit()
         cursor.close()
         connection.close()
-
 
     @staticmethod
     def atualizar_tarefa(tarefa_id, titulo, descricao, data_limite, id_status, id_prioridade, id_categoria):
@@ -121,8 +121,18 @@ class Tarefa:
             UPDATE tarefas 
             SET titulo = %s, descricao = %s, data_limite = %s, id_status = %s, 
                 id_prioridade = %s, id_categoria = %s 
-            WHERE id = %s
+            WHERE id_tarefa = %s
         ''', (titulo, descricao, data_limite, id_status, id_prioridade, id_categoria, tarefa_id))
         connection.commit()
         cursor.close()
         connection.close()
+
+    @staticmethod
+    def buscar_tarefa_por_id(tarefa_id):
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM tarefas WHERE id_tarefa = %s', (tarefa_id,))
+        tarefa = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return tarefa

@@ -5,42 +5,94 @@
 <h2>Suas Tarefas</h2>
 <a href="{{ url_for('adicionar_tarefa') }}" class="btn btn-primary">Adicionar Tarefa</a>
 
-<div class="filtro-container">
+<form method="GET" action="{{ url_for('tarefas') }}" class="filtro-container">
     <div>
         <label for="categoria" class="filtro-label">Categoria:</label>
-        <select id="categoria" name="categoria" class="filtro-select">
+        <select id="categoria" name="categoria_id" class="filtro-select">
             <option value="">Todas</option>
             {% for categoria in categoria_tarefas %}
-                <option value="{{ categoria.id_categoria }}">{{ categoria.descricao }}</option>
+                <option value="{{ categoria.id_categoria }}" {% if categoria.id_categoria == categoria_id %}selected{% endif %}>
+                    {{ categoria.descricao }}
+                </option>
             {% endfor %}
         </select>
     </div>
+    
+    <div>
+        <label for="prioridade" class="filtro-label">Prioridade:</label>
+        <select id="prioridade" name="prioridade_id" class="filtro-select">
+            <option value="">Todas</option>
+            {% for prioridade in prioridade_tarefas %}
+                <option value="{{ prioridade.id_prioridade }}" {% if prioridade.id_prioridade == prioridade_id %}selected{% endif %}>
+                    {{ prioridade.descricao }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div>
+        <label for="status" class="filtro-label">Status:</label>
+        <select id="status" name="status_id" class="filtro-select">
+            <option value="">Todos</option>
+            {% for status in status_tarefas %}
+                <option value="{{ status.id_status }}" {% if status.id_status == status_id %}selected{% endif %}>
+                    {{ status.descricao }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
     <div>
         <label for="data_inicio" class="filtro-label">Data Início:</label>
-        <input type="date" id="data_inicio" name="data_inicio" class="filtro-select">
+        <input type="date" id="data_inicio" name="data_inicio" class="filtro-select" value="{{ data_inicio }}">
     </div>
+    
     <div>
         <label for="data_fim" class="filtro-label">Data Fim:</label>
-        <input type="date" id="data_fim" name="data_fim" class="filtro-select">
+        <input type="date" id="data_fim" name="data_fim" class="filtro-select" value="{{ data_fim }}">
     </div>
+    
     <button type="submit" class="filtro-button">Filtrar</button>
-</div>
+</form>
 
-<ul>
-    {% for tarefa in tarefas %}
-    <li>
-        <div>
-            <strong>{{ tarefa.titulo }}</strong> - {{ tarefa.data_limite }}
-            <span>{{ tarefa.status }}</span>
-        </div>
-        <div>
-            <a href="{{ url_for('atualizar_tarefa', tarefa_id=tarefa.id_tarefa) }}">Editar</a> |
-            <form action="{{ url_for('excluir_tarefa', tarefa_id=tarefa.id_tarefa) }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-danger">Excluir</button>
-            </form>
-        </div>
-    </li>
-    {% endfor %}
-</ul>
+{% if tarefas %}
+    <ul>
+        {% for tarefa in tarefas %}
+        <li class="
+            {% if tarefa.id_prioridade == 1 %} prioridade-alta
+            {% elif tarefa.id_prioridade == 2 %} prioridade-media
+            {% elif tarefa.id_prioridade == 3 %} prioridade-baixa
+            {% endif %}
+        ">
+            <div class="task-header">
+                <strong>{{ tarefa.titulo }}</strong> - {{ tarefa.data_limite }}
+                <span class="
+                    {% if tarefa.status == 'Concluída' %} status-concluida
+                    {% elif tarefa.status == 'Em andamento' %} status-andamento
+                    {% elif tarefa.status == 'Pendente' %} status-pendente
+                    {% endif %}
+                ">{{ tarefa.status }}</span>
+            </div>
+
+            <div class="task-description">
+                {{ tarefa.descricao }}
+            </div>
+
+            <div>
+                <a href="{{ url_for('atualizar_tarefa', tarefa_id=tarefa.id_tarefa) }}">Editar</a> |
+                <form action="{{ url_for('excluir_tarefa', tarefa_id=tarefa.id_tarefa) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    {% if not categoria_id and not prioridade_id and not status_id and not data_inicio and not data_fim %}
+        <p class="no-tasks-message">Comece a anotar suas tarefas!</p>
+    {% else %}
+        <p class="no-tasks-message">Não há tarefas que atendam aos filtros aplicados.</p>
+    {% endif %}
+{% endif %}
 
 {% endblock %}

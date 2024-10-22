@@ -79,7 +79,7 @@ OrganizeMe/
 │   ├── adicionar_tarefa.html
 │   └── atualizar_tarefa.html
 └── static/ 
-    ├── css/-
+    ├── css/
     │   └── styles.css
 ```
 
