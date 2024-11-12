@@ -159,6 +159,7 @@ li {
 
 li:hover {
     background-color: var(--cor-hover);
+    color: var(--cor-texto)
 }
 
 .prioridade-alta {
