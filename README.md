@@ -46,13 +46,13 @@ Antes de executar o projeto, você precisa ter o seguinte instalado em sua máqu
 
    ### Linux:
    ```bash
-   python3 -m env venv
+   python3 -m venv env
    source env/bin/activate
    ```
 
    ### Windows:
    ```cmd
-   python -m env venv
+   python -m venv env
    .\env\Scripts\activate
    ```
 
