@@ -42,23 +42,37 @@ Antes de executar o projeto, você precisa ter o seguinte instalado em sua máqu
    cd OrganizeMe
    ```
 
-2. Instale as dependências necessárias:
+2. Crie um ambiente virtual:
+
+   ### Linux:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+   ### Windows:
+   ```cmd
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+
+3. Instale as dependências necessárias:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Crie o banco de dados:
+4. Crie o banco de dados:
    - Execute o arquivo `init_db.py` para criar o banco de dados e as tabelas necessárias:
    ```bash
    python init_db.py
    ```
 
-4. Inicie o servidor Flask:
+5. Inicie o servidor Flask:
    ```bash
    flask run --debug
    ```
 
-5. Acesse o aplicativo em seu navegador:
+6. Acesse o aplicativo em seu navegador:
    ```
    http://127.0.0.1:5000
    ```
